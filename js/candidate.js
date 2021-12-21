@@ -25,6 +25,7 @@ function candidateData(data) {
     candidateName.setAttribute('value', candidate.candidateName)
     candidateName.innerHTML = candidate.candidateName
 
+
     candidateDiv.append(candidateName)
     out(candidateName)
     /*

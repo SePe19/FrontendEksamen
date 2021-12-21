@@ -34,7 +34,6 @@ function newCandidate() {
 function candidateCreated(data){
   out(arguments)
   out(data)
-  //window.location.href = "/Tidsregistrering-projekt-Frontend/project.html";
 }
 
 function fetchAllParties() {

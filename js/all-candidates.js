@@ -8,23 +8,51 @@ function fetchCandidates() {
     .then(candidateData)
 }
 
-const mainDiv = document.getElementById("candidateDiv")
+const candidateTable = document.getElementById("partyTable");
 
 function candidateData(data) {
   for (let i = 0; i < data.length; i++) {
 
     const candidate = data[i];
 
-    let candidateDiv = document.createElement('div')
+    let rowCount = candidateTable.rows.length;
+    let row = candidateTable.insertRow(rowCount);
+    row.id = candidate.candidateId;
 
-    mainDiv.append(candidateDiv)
+    let cell1 = row.insertCell(0)
+    let candidateName = document.createElement('td')
+    candidateName.setAttribute('value', candidate.candidateName)
+    candidateName.innerHTML = candidate.candidateName
+    cell1.appendChild(candidateName);
 
-    let candidateName = document.createElement('span')
-    candidateName.setAttribute('value', candidate.candidateName);
-    candidateName.innerText = candidate.candidateName;
+    let cell2 = row.insertCell(1)
+    let partyName = document.createElement('td')
+    partyName.setAttribute('value', candidate.party.partyName)
+    partyName.innerHTML = candidate.party.partyName
+    cell2.appendChild(partyName);
 
-    candidateDiv.append(candidateName)
-    out(candidateName)
+    let cell3 = row.insertCell(2)
+    const updateButton = document.createElement('button')
+    updateButton.classList.add('profile-edit-btn', 'btn', 'updateButton');
+    updateButton.type = 'button'
+    updateButton.innerText = 'Update'
+    cell3.append(updateButton)
+
+    updateButton.onclick = function () {
+      candidate.candidateName = candidateInput.value;
+      updateCandidate(candidate)
+    }
+
+    let cell4 = row.insertCell(3)
+    const deleteButton = document.createElement('button')
+    deleteButton.classList.add('profile-edit-btn', 'btn', 'deleteButton');
+    deleteButton.type = 'button'
+    deleteButton.innerText = 'Delete'
+    cell4.append(deleteButton)
+
+    deleteButton.onclick = function () {
+      deleteCandidate(candidate)
+    }
 
     let candidateInput = document.createElement('input')
     candidateInput.type = 'text'
@@ -34,27 +62,6 @@ function candidateData(data) {
       candidateInput.value = candidate.candidateName;
       candidateName.replaceWith(candidateInput)
     })
-
-    const updateButton = document.createElement('button')
-    updateButton.classList.add('profile-edit-btn', 'btn', 'btn-primary', 'updateButtonProject');
-    updateButton.type = 'button'
-    updateButton.innerText = 'Save'
-    candidateDiv.append(updateButton)
-
-    updateButton.onclick = function () {
-      candidate.candidateName = candidateInput.value;
-      updateCandidate(candidate)
-    }
-
-    const deleteButton = document.createElement('button')
-    deleteButton.classList.add('profile-edit-btn', 'btn', 'btn-danger', 'deleteButton');
-    deleteButton.type = 'button'
-    deleteButton.innerText = 'Delete'
-    candidateDiv.append(deleteButton)
-
-    deleteButton.onclick = function () {
-      deleteCandidate(candidate)
-    }
   }
 }
 
@@ -92,7 +99,7 @@ async function restUpdateCandidate(candidate) {
 
 async function deleteCandidate(candidate) {
   try {
-    const response = await restDeleteProject(candidate);
+    const response = await restDeleteCandidate(candidate);
     out(response);
     window.location.reload();
   } catch (error) {
@@ -100,7 +107,7 @@ async function deleteCandidate(candidate) {
   }
 }
 
-async function restDeleteProject(candidate) {
+async function restDeleteCandidate(candidate) {
   const deleteUrl = "http://localhost:8080/candidate/" + candidate.candidateId;
   const fetchOptions = {
     method: "DELETE",
